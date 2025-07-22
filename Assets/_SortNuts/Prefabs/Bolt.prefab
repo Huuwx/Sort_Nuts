@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2104418977652831514}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.59, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100.00004, z: 20.526619}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -95,6 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5457989996090963243}
+  - component: {fileID: -4386091790780524980}
   m_Layer: 0
   m_Name: Bolt
   m_TagString: Untagged
@@ -112,13 +113,27 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3130523080975890447}
   - {fileID: 5729176684656205715}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4386091790780524980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764191813628975596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9562060d2681f48a60cd11c1045507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boltController: {fileID: 0}
+  boardManager: {fileID: 0}
 --- !u!1 &4678136090458364738
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +161,7 @@ Transform:
   m_GameObject: {fileID: 4678136090458364738}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.59, z: 0}
   m_LocalScale: {x: 43.79179, y: 43.791794, z: 147.90381}
   m_ConstrainProportionsScale: 0
   m_Children: []
