@@ -13,6 +13,10 @@ public class BoardManager : MonoBehaviour
     private NutController pickedNut;
 
     private Vector3 pickedNutPosition;
+    
+    [SerializeField] int maxNutsPerBolt = 3;
+    [SerializeField] int boltsNumberToComple = 3;
+    
 
     void Start()
     {
@@ -23,6 +27,9 @@ public class BoardManager : MonoBehaviour
     // Gọi hàm này từ sự kiện OnClick từng Bolt (ví dụ add trong Inspector hoặc script)
     public void OnBoltClicked(BoltController bolt)
     {
+        if (bolt.IsCompleted(maxNutsPerBolt))
+            return;
+        
         if (state == GameState.Idle)
         {
             // Chọn nut trên cùng (và stack cùng màu bên dưới)
@@ -40,7 +47,6 @@ public class BoardManager : MonoBehaviour
         }
         else if (state == GameState.NutPicked)
         {
-            // Không cho click lại chính bolt đang cầm nut
             if (bolt == selectedBolt)
             {
                 StartCoroutine(MoveNutBack(pickedNut, selectedBolt));
@@ -52,9 +58,11 @@ public class BoardManager : MonoBehaviour
             }
 
             NutController topNutTarget = bolt.GetTopNut();
-            // Điều kiện hợp lệ: cột rỗng hoặc nut đầu cùng màu nut đang cầm
-            bool canPlace = (topNutTarget == null)
-                          || (topNutTarget.nutColor == pickedNut.nutColor);
+            // Điều kiện hợp lệ: cột rỗng hoặc nut đầu cùng màu nut đang cầm va có đủ chỗ
+            List<NutController> nutsInTargetBolt = bolt.GetNuts();
+            bool canPlace = ((topNutTarget == null)
+                          || (topNutTarget.nutColor == pickedNut.nutColor))
+                          && (pickedNuts.Count + nutsInTargetBolt.Count <= maxNutsPerBolt);
 
             if (canPlace)
             {
@@ -107,13 +115,27 @@ public class BoardManager : MonoBehaviour
             StartCoroutine(MoveAndRotateNut(nuts[i].transform, targetPos, 0.25f));
         }
         yield return new WaitForSeconds(0.3f);
+        
+        // Hiệu ứng bolt hoàn thành nếu có
+        if (to.IsCompleted(maxNutsPerBolt))
+        {
+            Debug.Log("Bolt đã hoàn thành!");
+            to.OnCompleted();
+        }
+
+        // Kiểm tra tất cả các bolt
+        if (AllBoltsCompleted())
+        {
+            Debug.Log("TẤT CẢ BOLT ĐÃ HOÀN THÀNH! WIN GAME!");
+            // TODO: Show win panel, khóa thao tác, v.v...
+        }
+        
         state = GameState.Idle;
     }
 
     // Trả nut về lại bolt cũ
     IEnumerator MoveNutBack(NutController nut, BoltController from)
     {
-        var oldNuts = from.GetTopNut();
         nut.transform.SetParent(from.nutsContainer);
         StartCoroutine(MoveAndRotateNut(nut.transform, pickedNutPosition, 0.25f));
         yield return new WaitForSeconds(0.3f);
@@ -138,6 +160,19 @@ public class BoardManager : MonoBehaviour
         nut.position = target;
         nut.rotation = startRot; // Giữ hướng ban đầu
     }
+
+    // Kiểm tra tất cả các Bolt đã hoàn thành chưa
+    public bool AllBoltsCompleted()
+    {
+        int count = 0;
+        foreach (var bolt in bolts)
+        {
+            if (bolt.IsCompleted(maxNutsPerBolt))
+                count++;
+        }
+        return count == boltsNumberToComple;
+    }
+
 
     private void OnDrawGizmosSelected()
     {

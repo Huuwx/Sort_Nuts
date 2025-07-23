@@ -6,6 +6,8 @@ public class BoltController : MonoBehaviour
 {
     public Transform nutsContainer; // Drag object Nuts vào đây trên Inspector
 
+    [SerializeField] private GameObject screw;
+
     // Lấy danh sách Nut trên trụ từ dưới lên trên
     public List<NutController> GetNuts()
     {
@@ -37,39 +39,6 @@ public class BoltController : MonoBehaviour
         }
         return topNut;
     }
-
-    // Kiểm tra trụ đã đầy chưa (tối đa số nut, vd 4)
-    public bool IsFull(int maxNuts)
-    {
-        return GetNuts().Count >= maxNuts;
-    }
-
-    // Kiểm tra trụ rỗng
-    public bool IsEmpty()
-    {
-        return GetNuts().Count == 0;
-    }
-
-    // Thêm Nut vào trụ (chuyển nut về nutsContainer)
-    public void AddNut(NutController nut)
-    {
-        nut.transform.SetParent(nutsContainer);
-        // Đặt vị trí localPosition.y kế tiếp (cao hơn nut trên cùng 1 đơn vị)
-        var nuts = GetNuts();
-        float nextY = nuts.Count > 1 ? nuts[nuts.Count - 2].transform.localPosition.y + 1f : 0f;
-        nut.transform.localPosition = new Vector3(0, nextY, 0);
-    }
-
-    // Xóa Nut trên cùng (pop)
-    public NutController RemoveTopNut()
-    {
-        NutController topNut = GetTopNut();
-        if (topNut != null)
-        {
-            topNut.transform.SetParent(null);
-        }
-        return topNut;
-    }
     
     public List<NutController> GetTopNutStack()
     {
@@ -88,9 +57,31 @@ public class BoltController : MonoBehaviour
         }
         return result;
     }
+    
+    public bool IsCompleted(int maxNuts)
+    {
+        List<NutController> nuts = GetNuts();
+        if (nuts.Count != maxNuts) return false;
+        if (nuts.Count == 0) return false;
+
+        Color color = nuts[0].nutColor;
+        for (int i = 1; i < nuts.Count; i++)
+        {
+            if (nuts[i].nutColor != color)
+                return false;
+        }
+        return true;
+    }
+
+    public void OnCompleted()
+    {
+        screw.SetActive(true);
+    }
+
 
     private void OnDrawGizmosSelected()
     {
         nutsContainer = transform.GetChild(1);
+        screw = transform.GetChild(2).gameObject;
     }
 }
