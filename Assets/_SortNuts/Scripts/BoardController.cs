@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class BoardManager : MonoBehaviour
 
     private BoltController selectedBolt;      // Bolt đang được chọn lần đầu
     private List<NutController> pickedNuts;   // Các nut sẽ di chuyển
+    private NutController pickedNut;
+
+    private Vector3 pickedNutPosition;
 
     void Start()
     {
@@ -22,82 +26,98 @@ public class BoardManager : MonoBehaviour
         if (state == GameState.Idle)
         {
             // Chọn nut trên cùng (và stack cùng màu bên dưới)
+            pickedNut = bolt.GetTopNut();
             pickedNuts = bolt.GetTopNutStack();
-            if (pickedNuts.Count == 0) return;
+            //if (pickedNuts.Count == 0) return;
+            if (pickedNut == null) return;
+            
+            pickedNutPosition = pickedNut.transform.position;
 
             selectedBolt = bolt;
-            StartCoroutine(MoveNutsUp(pickedNuts));  // Animation move lên trên và xoay
+            StartCoroutine(MoveNutUp(pickedNut, bolt));  // Animation move lên trên và xoay
 
             state = GameState.NutPicked;
         }
         else if (state == GameState.NutPicked)
         {
             // Không cho click lại chính bolt đang cầm nut
-            if (bolt == selectedBolt) return;
+            if (bolt == selectedBolt)
+            {
+                StartCoroutine(MoveNutBack(pickedNut, selectedBolt));
+                state = GameState.CantPick;
+                selectedBolt = null;
+                pickedNut = null;
+                pickedNuts = new List<NutController>();
+                return;
+            }
 
             NutController topNutTarget = bolt.GetTopNut();
             // Điều kiện hợp lệ: cột rỗng hoặc nut đầu cùng màu nut đang cầm
             bool canPlace = (topNutTarget == null)
-                          || (topNutTarget.nutColor == pickedNuts[0].nutColor);
+                          || (topNutTarget.nutColor == pickedNut.nutColor);
 
             if (canPlace)
             {
                 // Di chuyển nut sang bolt mới, animation
-                StartCoroutine(MoveNutsToBolt(pickedNuts, selectedBolt, bolt));
+                StartCoroutine(MoveNutsToBolt(pickedNuts, selectedBolt,bolt));
+                Debug.Log("DI chuyen");
             }
             else
             {
                 // Không hợp lệ, trả nut về lại vị trí cũ
-                StartCoroutine(MoveNutsBack(pickedNuts, selectedBolt));
+                StartCoroutine(MoveNutBack(pickedNut, selectedBolt));
             }
             // Reset state
-            state = GameState.Idle;
+            state = GameState.CantPick;
             selectedBolt = null;
+            pickedNut = null;
             pickedNuts = new List<NutController>();
         }
     }
 
     // Animation move lên trên và xoay (có thể dùng DOTween hoặc Coroutine)
-    IEnumerator MoveNutsUp(List<NutController> nuts)
+    IEnumerator MoveNutUp(NutController nut, BoltController bolt)
     {
-        foreach (var nut in nuts)
-        {
-            Vector3 upPos = nut.transform.position + new Vector3(0, 1f, 0);
-            StartCoroutine(MoveAndRotateNut(nut.transform, upPos, 0.2f));
-        }
+        Vector3 upPos = bolt.transform.position + bolt.transform.up * 0.7f;
+        StartCoroutine(MoveAndRotateNut(nut.transform, upPos, 0.2f));
+        
         yield return new WaitForSeconds(0.25f);
     }
 
     // Animation move đến bolt target
-    IEnumerator MoveNutsToBolt(List<NutController> nuts, BoltController from, BoltController to)
+    IEnumerator MoveNutsToBolt(List<NutController> nuts, BoltController from ,BoltController to)
     {
         // Tính vị trí đích cho từng nut ở bolt mới
         int targetIndex = to.GetNuts().Count;
-        for (int i = 0; i < nuts.Count; i++)
+        for (int i = nuts.Count - 1; i >= 0; i--)
         {
             // Chuyển parent sang bolt mới
             nuts[i].transform.SetParent(to.nutsContainer);
-
+            
+            float targetY = (targetIndex + 1) * 0.12f;
+            targetIndex++;
             // Vị trí đích theo localPosition
-            Vector3 targetPos = to.nutsContainer.position + new Vector3(0, targetIndex + i, 0);
+            Vector3 targetPos = to.nutsContainer.position + new Vector3(0, targetY, 0);
 
+            if (i < nuts.Count - 1)
+            {
+                yield return StartCoroutine(MoveNutUp(nuts[i], from));
+            }
+            yield return StartCoroutine(MoveAndRotateNut(nuts[i].transform, to.transform.position + to.transform.up * 0.7f, 0.25f));
             StartCoroutine(MoveAndRotateNut(nuts[i].transform, targetPos, 0.25f));
         }
         yield return new WaitForSeconds(0.3f);
+        state = GameState.Idle;
     }
 
     // Trả nut về lại bolt cũ
-    IEnumerator MoveNutsBack(List<NutController> nuts, BoltController from)
+    IEnumerator MoveNutBack(NutController nut, BoltController from)
     {
-        var oldNuts = from.GetNuts();
-        int startIndex = oldNuts.Count;
-        for (int i = 0; i < nuts.Count; i++)
-        {
-            nuts[i].transform.SetParent(from.nutsContainer);
-            Vector3 backPos = from.nutsContainer.position + new Vector3(0, startIndex + i, 0);
-            StartCoroutine(MoveAndRotateNut(nuts[i].transform, backPos, 0.25f));
-        }
+        var oldNuts = from.GetTopNut();
+        nut.transform.SetParent(from.nutsContainer);
+        StartCoroutine(MoveAndRotateNut(nut.transform, pickedNutPosition, 0.25f));
         yield return new WaitForSeconds(0.3f);
+        state = GameState.Idle;
     }
 
     // Animation chuyển nut tới vị trí (và xoay)
@@ -105,17 +125,22 @@ public class BoardManager : MonoBehaviour
     {
         Vector3 startPos = nut.position;
         Quaternion startRot = nut.rotation;
-        Quaternion targetRot = Quaternion.Euler(0, 360, 0) * startRot;
+        Quaternion targetRot = Quaternion.Euler(0, 180, 0) * startRot;
 
         float t = 0;
         while (t < 1f)
         {
             t += Time.deltaTime / time;
             nut.position = Vector3.Lerp(startPos, target, t);
-            nut.rotation = Quaternion.Lerp(startRot, targetRot, t); // Xoay 1 vòng
+            nut.rotation = Quaternion.Lerp(startRot, targetRot, t);
             yield return null;
         }
         nut.position = target;
         nut.rotation = startRot; // Giữ hướng ban đầu
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        bolts = transform.GetComponentsInChildren<BoltController>();
     }
 }

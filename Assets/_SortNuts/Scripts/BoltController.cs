@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -72,7 +73,7 @@ public class BoltController : MonoBehaviour
     
     public List<NutController> GetTopNutStack()
     {
-        List<NutController> nuts = GetNutsSortedByY();
+        List<NutController> nuts = GetNuts();
         List<NutController> result = new List<NutController>();
         if (nuts.Count == 0) return result;
 
@@ -88,18 +89,8 @@ public class BoltController : MonoBehaviour
         return result;
     }
 
-// Đảm bảo trả nuts từ thấp đến cao (theo localPosition.y)
-    public List<NutController> GetNutsSortedByY()
+    private void OnDrawGizmosSelected()
     {
-        List<NutController> nuts = new List<NutController>();
-        foreach (Transform child in nutsContainer)
-        {
-            NutController nut = child.GetComponent<NutController>();
-            if (nut != null)
-                nuts.Add(nut);
-        }
-        nuts.Sort((a, b) => a.transform.localPosition.y.CompareTo(b.transform.localPosition.y));
-        return nuts;
+        nutsContainer = transform.GetChild(1);
     }
-
 }

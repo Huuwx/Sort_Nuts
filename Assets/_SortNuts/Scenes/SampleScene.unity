@@ -1747,12 +1747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e7c1f02692db742ada2080a26e7282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bolts:
-  - {fileID: 661929962}
-  - {fileID: 32836501}
-  - {fileID: 735763116}
-  - {fileID: 1971923098}
-  - {fileID: 14522125}
+  bolts: []
 --- !u!1 &1539489283
 GameObject:
   m_ObjectHideFlags: 0

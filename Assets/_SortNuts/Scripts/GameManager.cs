@@ -3,7 +3,8 @@ using UnityEngine;
 public enum GameState
 {
     Idle,
-    NutPicked
+    NutPicked,
+    CantPick
 }
 public class GameManager : MonoBehaviour
 {
