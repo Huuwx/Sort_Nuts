@@ -2682,11 +2682,11 @@ PrefabInstance:
     - target: {fileID: -4386091790780524980, guid: 986ca8bb231da8b4d882bcdb0becc1e8, type: 3}
       propertyPath: boardManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1534215219}
     - target: {fileID: -4386091790780524980, guid: 986ca8bb231da8b4d882bcdb0becc1e8, type: 3}
       propertyPath: boltController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 661929962}
     - target: {fileID: 2764191813628975596, guid: 986ca8bb231da8b4d882bcdb0becc1e8, type: 3}
       propertyPath: m_Name
       value: Bolt

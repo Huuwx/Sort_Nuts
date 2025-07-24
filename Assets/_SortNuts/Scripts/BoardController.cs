@@ -18,7 +18,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] int boltsNumberToComple = 3;
     
 
-    void Start()
+    void Awake()
     {
         state = GameState.Idle;
         pickedNuts = new List<NutController>();
@@ -139,7 +139,7 @@ public class BoardManager : MonoBehaviour
             // Nếu nut này là nut bí ẩn, thì Reveal
             if (newTopNut.isMysteryNut)
             {
-                newTopNut.RevealColor();
+                newTopNut.SetMystery(false);
                 // Có thể thêm hiệu ứng (lật, sáng...)
             }
         }
