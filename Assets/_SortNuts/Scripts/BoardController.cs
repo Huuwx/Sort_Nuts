@@ -130,6 +130,20 @@ public class BoardManager : MonoBehaviour
             // TODO: Show win panel, khóa thao tác, v.v...
         }
         
+        // Kiểm tra nut trên cùng của bolt cũ
+        var remainNuts = from.GetNuts();
+        if (remainNuts.Count > 0)
+        {
+            // Lấy nut trên cùng mới
+            var newTopNut = remainNuts[remainNuts.Count - 1];
+            // Nếu nut này là nut bí ẩn, thì Reveal
+            if (newTopNut.isMysteryNut)
+            {
+                newTopNut.RevealColor();
+                // Có thể thêm hiệu ứng (lật, sáng...)
+            }
+        }
+        
         state = GameState.Idle;
     }
 

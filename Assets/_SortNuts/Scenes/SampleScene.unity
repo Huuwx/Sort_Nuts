@@ -1645,6 +1645,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1051915599}
     m_Modifications:
+    - target: {fileID: -7002456344687055283, guid: 12ff0340e068c0a4ab63725292c2976f, type: 3}
+      propertyPath: isMysteryNut
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 592861862712310786, guid: 12ff0340e068c0a4ab63725292c2976f, type: 3}
       propertyPath: m_Name
       value: Red Nut
@@ -2097,6 +2101,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1051915599}
     m_Modifications:
+    - target: {fileID: -7002456344687055283, guid: 12ff0340e068c0a4ab63725292c2976f, type: 3}
+      propertyPath: isMysteryNut
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 592861862712310786, guid: 12ff0340e068c0a4ab63725292c2976f, type: 3}
       propertyPath: m_Name
       value: Red Nut (1)
