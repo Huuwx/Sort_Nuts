@@ -7,6 +7,12 @@ public class BoltController : MonoBehaviour
     public Transform nutsContainer; // Drag object Nuts vào đây trên Inspector
 
     [SerializeField] private GameObject screw;
+    
+    private void Awake()
+    {
+        nutsContainer = transform.GetChild(1);
+        screw = transform.GetChild(2).gameObject;
+    }
 
     // Lấy danh sách Nut trên trụ từ dưới lên trên
     public List<NutController> GetNuts()
@@ -14,6 +20,8 @@ public class BoltController : MonoBehaviour
         List<NutController> nuts = new List<NutController>();
         foreach (Transform child in nutsContainer)
         {
+            if (child == null) continue; // Không duyệt nếu child đã bị Destroy
+            
             NutController nut = child.GetComponent<NutController>();
             if (nut != null)
                 nuts.Add(nut);
@@ -76,12 +84,5 @@ public class BoltController : MonoBehaviour
     public void OnCompleted()
     {
         screw.SetActive(true);
-    }
-
-
-    private void OnDrawGizmosSelected()
-    {
-        nutsContainer = transform.GetChild(1);
-        screw = transform.GetChild(2).gameObject;
     }
 }

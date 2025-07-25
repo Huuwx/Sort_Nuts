@@ -8,15 +8,27 @@ public enum GameState
 }
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public static GameManager Instance; // Singleton pattern
+    
+    public BoardManager boardManager; // Kéo vào Inspector
+
+    private void Awake()
+    {
+        Instance = this; // Gán instance cho singleton
+    }
+    
     void Start()
     {
-        
+        if (boardManager == null)
+        {
+            boardManager = FindObjectOfType<BoardManager>();
+        }
+        boardManager.LoadLevel(0);
     }
 
-    // Update is called once per frame
-    void Update()
+    // Đổi sang level mới (ví dụ nút next)
+    public void LoadNextLevel()
     {
-        
+        boardManager.LoadLevel(boardManager.currentLevelIndex + 1);
     }
 }

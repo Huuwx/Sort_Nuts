@@ -17,6 +17,16 @@ public class BoardManager : MonoBehaviour
     [SerializeField] int maxNutsPerBolt = 3;
     [SerializeField] int boltsNumberToComple = 3;
     
+    public LevelDatabaseSO levelDatabase;  // Kéo asset vào Inspector
+    public int currentLevelIndex = 0;
+
+    public Transform boardParent;          // Object chứa các Bolt (kéo Board vào Inspector)
+    public GameObject boltPrefab;          // Prefab Bolt
+    public GameObject nutPrefab;           // Prefab Nut
+
+    private List<GameObject> activeBolts = new List<GameObject>();
+    
+    [SerializeField] private BoltAutoArranger boltAutoArranger;
 
     void Awake()
     {
@@ -112,7 +122,8 @@ public class BoardManager : MonoBehaviour
                 yield return StartCoroutine(MoveNutUp(nuts[i], from));
             }
             yield return StartCoroutine(MoveAndRotateNut(nuts[i].transform, to.transform.position + to.transform.up * 0.7f, 0.25f));
-            StartCoroutine(MoveAndRotateNut(nuts[i].transform, targetPos, 0.25f));
+            yield return StartCoroutine(MoveAndRotateNut(nuts[i].transform, targetPos, 0.25f));
+            nuts[i].transform.localPosition = new Vector3(0, targetY, 0); // Đặt lại localPosition
         }
         yield return new WaitForSeconds(0.3f);
         
@@ -128,6 +139,7 @@ public class BoardManager : MonoBehaviour
         {
             Debug.Log("TẤT CẢ BOLT ĐÃ HOÀN THÀNH! WIN GAME!");
             // TODO: Show win panel, khóa thao tác, v.v...
+            GameManager.Instance.LoadNextLevel();
         }
         
         // Kiểm tra nut trên cùng của bolt cũ
@@ -186,10 +198,54 @@ public class BoardManager : MonoBehaviour
         }
         return count == boltsNumberToComple;
     }
+    
+    // Hàm load level theo index
+    public void LoadLevel(int levelIndex)
+    {
+        // 1. Clear các bolt/nut cũ
+        foreach (var bolt in activeBolts)
+        {
+            // Destroy(bolt);
+            bolt.SetActive(false);
+        }
+        activeBolts.Clear();
 
+        // 2. Lấy LevelDataSO từ LevelDatabaseSO
+        if (levelIndex < 0 || levelIndex >= levelDatabase.levels.Count)
+        {
+            Debug.LogError("Level index out of range!");
+            return;
+        }
+        LevelDataSO levelData = levelDatabase.levels[levelIndex];
 
+        // 3. Tạo Bolt/Nut từ LevelDataSO
+        for (int i = 0; i < levelData.bolts.Count; i++)
+        {
+            GameObject boltObj = Instantiate(boltPrefab, boardParent);
+            BoltController boltCtrl = boltObj.GetComponent<BoltController>();
+            activeBolts.Add(boltObj);
+
+            // Tạo nut cho bolt này (từ dưới lên trên)
+            for (int j = 0; j < levelData.bolts[i].nuts.Count; j++)
+            {
+                var nutData = levelData.bolts[i].nuts[j];
+
+                GameObject nutObj = Instantiate(nutPrefab, boltCtrl.nutsContainer); // nutsContainer là transform child chứa nut
+                nutObj.transform.localPosition = new Vector3(0, (j + 1) * 0.12f, 0); // Điều chỉnh spacing theo game bạn
+                NutController nutCtrl = nutObj.GetComponent<NutController>();
+
+                nutCtrl.SetUp();
+                nutCtrl.nutRen.material = nutData.material;
+                nutCtrl.SetMystery(nutData.isMysteryNut);
+            }
+        }
+        boltAutoArranger.ArrangeBoltsToFitCamera(activeBolts);
+        currentLevelIndex = levelIndex;
+        bolts = GameObject.Find("Board").transform.GetComponentsInChildren<BoltController>();
+    }
+    
     private void OnDrawGizmosSelected()
     {
-        bolts = transform.GetComponentsInChildren<BoltController>();
+        bolts = GameObject.Find("Board").transform.GetComponentsInChildren<BoltController>();
     }
 }

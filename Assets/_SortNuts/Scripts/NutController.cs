@@ -4,24 +4,38 @@ using UnityEngine;
 public class NutController : MonoBehaviour
 {
     public Color nutColor;
+    public Renderer nutRen;
     public bool isMysteryNut = false; // có phải nut "?"
     [SerializeField] GameObject mysteryMark; // GameObject chứa dấu "?" (kéo vào Inspector)
     [SerializeField] Renderer bodyRenderer;  // MeshRenderer phần thân nut (kéo vào Inspector)
 
-    private void Start()
+    // private void Start()
+    // {
+    //     nutRen = transform.GetChild(0).GetComponent<Renderer>();
+    //     mysteryMark = transform.GetChild(1).gameObject;
+    //     bodyRenderer = transform.GetChild(0).GetComponent<Renderer>();
+    //     if (isMysteryNut)
+    //     {
+    //         SetMystery(true);
+    //     }
+    //     else
+    //     {
+    //         SetMystery(false);  
+    //     }
+    // }
+
+    public void SetUp()
     {
+        SetNutRen();
         mysteryMark = transform.GetChild(1).gameObject;
         bodyRenderer = transform.GetChild(0).GetComponent<Renderer>();
-        if (isMysteryNut)
-        {
-            SetMystery(true);
-        }
-        else
-        {
-            SetMystery(false);
-        }
     }
-    
+
+    private void SetNutRen()
+    {
+        nutRen = transform.GetChild(0).GetComponent<Renderer>();
+    }
+
     // Hiện/ẩn màu thật hoặc dấu ?
     public void SetMystery(bool isMystery)
     {
