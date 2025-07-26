@@ -20,8 +20,8 @@ public class PoolManager : MonoBehaviour
     {
         Instance = this;
         boardParent = GameObject.Find("Board").transform;
-        InitPool(nutPrefab, nutPool, nutPoolSize);
         InitPool(boltPrefab, boltPool, boltPoolSize);
+        InitPool(nutPrefab, nutPool, nutPoolSize);
     }
 
     private void InitPool(GameObject prefab, Queue<GameObject> pool, int poolSize)
@@ -54,6 +54,7 @@ public class PoolManager : MonoBehaviour
     {
         nut.SetActive(false);
         nutPool.Enqueue(nut);
+        nut.transform.SetParent(boardParent);
     }
 
     public GameObject GetBolt()

@@ -5,13 +5,43 @@ using UnityEngine;
 public class BoltController : MonoBehaviour
 {
     public Transform nutsContainer; // Drag object Nuts vào đây trên Inspector
+    public int maxNutsPerBolt = 3;
 
     [SerializeField] private GameObject screw;
     
+    [SerializeField] Transform boltObj;
+    
     private void Awake()
     {
+        boltObj = transform.GetChild(0);
         nutsContainer = transform.GetChild(1);
         screw = transform.GetChild(2).gameObject;
+    }
+
+    private void OnEnable()
+    {
+        screw.SetActive(false);
+    }
+    
+    public void SetMaxNuts(int maxNuts)
+    {
+        maxNutsPerBolt = maxNuts;
+        // Cập nhật kích thước trụ nếu cần
+        if (maxNutsPerBolt == 4)
+        {
+            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.18f, boltObj.localScale.z);
+            screw.transform.position = new Vector3(screw.transform.position.x, 0.55f, screw.transform.position.z);
+        }
+        else if (maxNutsPerBolt == 5)
+        {
+            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.22f, boltObj.localScale.z);
+            screw.transform.position = new Vector3(screw.transform.position.x, 0.65f, screw.transform.position.z);
+        }
+        else if (maxNutsPerBolt == 3)
+        {
+            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.14f, boltObj.localScale.z);
+            screw.transform.position = new Vector3(screw.transform.position.x, 0.4f, screw.transform.position.z);
+        }
     }
 
     // Lấy danh sách Nut trên trụ từ dưới lên trên

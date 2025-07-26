@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     {
         if (boardManager == null)
         {
-            boardManager = FindObjectOfType<BoardManager>();
+            boardManager = FindFirstObjectByType<BoardManager>();
         }
         boardManager.LoadLevel(0);
     }

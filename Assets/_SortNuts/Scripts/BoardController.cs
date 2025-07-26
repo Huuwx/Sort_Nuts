@@ -14,7 +14,6 @@ public class BoardManager : MonoBehaviour
 
     private Vector3 pickedNutPosition;
     
-    [SerializeField] int maxNutsPerBolt = 3;
     [SerializeField] int boltsNumberToComple = 3;
     
     public LevelDatabaseSO levelDatabase;  // Kéo asset vào Inspector
@@ -25,6 +24,7 @@ public class BoardManager : MonoBehaviour
     public GameObject nutPrefab;           // Prefab Nut
 
     private List<GameObject> activeBolts = new List<GameObject>();
+    private List<GameObject> activeNuts = new List<GameObject>();
     
     [SerializeField] private BoltAutoArranger boltAutoArranger;
 
@@ -37,7 +37,7 @@ public class BoardManager : MonoBehaviour
     // Gọi hàm này từ sự kiện OnClick từng Bolt (ví dụ add trong Inspector hoặc script)
     public void OnBoltClicked(BoltController bolt)
     {
-        if (bolt.IsCompleted(maxNutsPerBolt))
+        if (bolt.IsCompleted(bolt.maxNutsPerBolt))
             return;
         
         if (state == GameState.Idle)
@@ -72,7 +72,7 @@ public class BoardManager : MonoBehaviour
             List<NutController> nutsInTargetBolt = bolt.GetNuts();
             bool canPlace = ((topNutTarget == null)
                           || (topNutTarget.nutColor == pickedNut.nutColor))
-                          && (pickedNuts.Count + nutsInTargetBolt.Count <= maxNutsPerBolt);
+                          && (pickedNuts.Count + nutsInTargetBolt.Count <= bolt.maxNutsPerBolt);
 
             if (canPlace)
             {
@@ -128,7 +128,7 @@ public class BoardManager : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         
         // Hiệu ứng bolt hoàn thành nếu có
-        if (to.IsCompleted(maxNutsPerBolt))
+        if (to.IsCompleted(to.maxNutsPerBolt))
         {
             Debug.Log("Bolt đã hoàn thành!");
             to.OnCompleted();
@@ -193,7 +193,7 @@ public class BoardManager : MonoBehaviour
         int count = 0;
         foreach (var bolt in bolts)
         {
-            if (bolt.IsCompleted(maxNutsPerBolt))
+            if (bolt.IsCompleted(bolt.maxNutsPerBolt))
                 count++;
         }
         return count == boltsNumberToComple;
@@ -205,10 +205,15 @@ public class BoardManager : MonoBehaviour
         // 1. Clear các bolt/nut cũ
         foreach (var bolt in activeBolts)
         {
-            // Destroy(bolt);
-            bolt.SetActive(false);
+            PoolManager.Instance.ReturnBolt(bolt);
         }
         activeBolts.Clear();
+        
+        foreach (var nut in activeNuts)
+        {
+            PoolManager.Instance.ReturnNut(nut);
+        }
+        activeNuts.Clear();
 
         // 2. Lấy LevelDataSO từ LevelDatabaseSO
         if (levelIndex < 0 || levelIndex >= levelDatabase.levels.Count)
@@ -217,12 +222,16 @@ public class BoardManager : MonoBehaviour
             return;
         }
         LevelDataSO levelData = levelDatabase.levels[levelIndex];
+        
+        boltsNumberToComple = levelData.boltsNumberToComplete;
 
         // 3. Tạo Bolt/Nut từ LevelDataSO
         for (int i = 0; i < levelData.bolts.Count; i++)
         {
-            GameObject boltObj = Instantiate(boltPrefab, boardParent);
+            // GameObject boltObj = Instantiate(boltPrefab, boardParent);
+            GameObject boltObj = PoolManager.Instance.GetBolt();
             BoltController boltCtrl = boltObj.GetComponent<BoltController>();
+            boltCtrl.SetMaxNuts(levelData.maxNutsPerBolt);
             activeBolts.Add(boltObj);
 
             // Tạo nut cho bolt này (từ dưới lên trên)
@@ -230,13 +239,17 @@ public class BoardManager : MonoBehaviour
             {
                 var nutData = levelData.bolts[i].nuts[j];
 
-                GameObject nutObj = Instantiate(nutPrefab, boltCtrl.nutsContainer); // nutsContainer là transform child chứa nut
+                // GameObject nutObj = Instantiate(nutPrefab, boltCtrl.nutsContainer); // nutsContainer là transform child chứa nut
+                GameObject nutObj = PoolManager.Instance.GetNut();
+                nutObj.transform.SetParent(boltCtrl.nutsContainer);
                 nutObj.transform.localPosition = new Vector3(0, (j + 1) * 0.12f, 0); // Điều chỉnh spacing theo game bạn
                 NutController nutCtrl = nutObj.GetComponent<NutController>();
 
                 nutCtrl.SetUp();
                 nutCtrl.nutRen.material = nutData.material;
                 nutCtrl.SetMystery(nutData.isMysteryNut);
+                
+                activeNuts.Add(nutObj);
             }
         }
         boltAutoArranger.ArrangeBoltsToFitCamera(activeBolts);
