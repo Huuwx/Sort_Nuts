@@ -4,6 +4,7 @@ using UnityEngine;
 public class NutController : MonoBehaviour
 {
     public Color nutColor;
+    public Color realColor; // Màu thật của nut, dùng để so sánh với màu của bolt
     public Renderer nutRen;
     public bool isMysteryNut = false; // có phải nut "?"
     [SerializeField] GameObject mysteryMark; // GameObject chứa dấu "?" (kéo vào Inspector)
@@ -29,6 +30,7 @@ public class NutController : MonoBehaviour
         SetNutRen();
         mysteryMark = transform.GetChild(1).gameObject;
         bodyRenderer = transform.GetChild(0).GetComponent<Renderer>();
+        transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
     }
 
     private void SetNutRen()
@@ -49,6 +51,8 @@ public class NutController : MonoBehaviour
             nutColor = transform.GetChild(0).GetComponent<Renderer>().material.color;
         else
             nutColor = transform.GetChild(1).GetComponent<Renderer>().material.color;
+        
+        realColor = transform.GetChild(0).GetComponent<Renderer>().material.color;
         
     }
 }

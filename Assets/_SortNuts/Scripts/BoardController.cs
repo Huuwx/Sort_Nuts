@@ -70,14 +70,27 @@ public class BoardManager : MonoBehaviour
             NutController topNutTarget = bolt.GetTopNut();
             // Điều kiện hợp lệ: cột rỗng hoặc nut đầu cùng màu nut đang cầm va có đủ chỗ
             List<NutController> nutsInTargetBolt = bolt.GetNuts();
-            bool canPlace = ((topNutTarget == null)
-                          || (topNutTarget.nutColor == pickedNut.nutColor))
-                          && (pickedNuts.Count + nutsInTargetBolt.Count <= bolt.maxNutsPerBolt);
+            bool canPlace = ((topNutTarget == null) 
+                             || (topNutTarget.nutColor == pickedNut.nutColor)) 
+                            && (nutsInTargetBolt.Count < bolt.maxNutsPerBolt);
 
             if (canPlace)
             {
                 // Di chuyển nut sang bolt mới, animation
-                StartCoroutine(MoveNutsToBolt(pickedNuts, selectedBolt,bolt));
+                if (pickedNuts.Count + nutsInTargetBolt.Count <= bolt.maxNutsPerBolt)
+                {
+                    StartCoroutine(MoveNutsToBolt(pickedNuts, selectedBolt, bolt));
+                }
+                else
+                {
+                    int excessCount = (pickedNuts.Count + nutsInTargetBolt.Count) - bolt.maxNutsPerBolt;
+                    for (int i = 0; i < excessCount; i++)
+                    {
+                        pickedNuts.Remove(pickedNuts[i]);
+                    }
+                    StartCoroutine(MoveNutsToBolt(pickedNuts, selectedBolt, bolt));
+                }
+
                 Debug.Log("DI chuyen");
             }
             else
@@ -143,17 +156,25 @@ public class BoardManager : MonoBehaviour
         }
         
         // Kiểm tra nut trên cùng của bolt cũ
-        var remainNuts = from.GetNuts();
+        var remainNuts = from.GetTopNutMysteryStack();
         if (remainNuts.Count > 0)
         {
-            // Lấy nut trên cùng mới
-            var newTopNut = remainNuts[remainNuts.Count - 1];
-            // Nếu nut này là nut bí ẩn, thì Reveal
-            if (newTopNut.isMysteryNut)
+            foreach (var nut in remainNuts)
             {
-                newTopNut.SetMystery(false);
-                // Có thể thêm hiệu ứng (lật, sáng...)
+                if (nut.isMysteryNut)
+                {
+                    nut.SetMystery(false);
+                    // Có thể thêm hiệu ứng (lật, sáng...)
+                }
             }
+            // // Lấy nut trên cùng mới
+            // var newTopNut = remainNuts[remainNuts.Count - 1];
+            // // Nếu nut này là nut bí ẩn, thì Reveal
+            // if (newTopNut.isMysteryNut)
+            // {
+            //     newTopNut.SetMystery(false);
+            //     // Có thể thêm hiệu ứng (lật, sáng...)
+            // }
         }
         
         state = GameState.Idle;

@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8965a643d2562e5479073538e475e50c, type: 3}
+  m_Name: Level_17
+  m_EditorClassIdentifier: 
+  maxNutsPerBolt: 7
+  boltsNumberToComplete: 5
+  bolts:
+  - nuts:
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+  - nuts:
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+  - nuts:
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+  - nuts:
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 7172ae68971cce04eb17c845f3307bd4, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+  - nuts:
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 2c06df6c257fbe240998cfe28cdffbd6, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 0924b8ad86381b5418c741681fbd2a38, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6e3879894d79f1745b881a658b004f8b, type: 2}
+      isMysteryNut: 0
+    - material: {fileID: 2100000, guid: 6f8acb4d205aa96419701f11bb9782cc, type: 2}
+      isMysteryNut: 0
+  - nuts: []
+  - nuts: []
+  - nuts: []

@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
         {
             boardManager = FindFirstObjectByType<BoardManager>();
         }
-        boardManager.LoadLevel(0);
+        boardManager.LoadLevel(18);
     }
 
     // Đổi sang level mới (ví dụ nút next)

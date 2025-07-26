@@ -15,32 +15,22 @@ public class BoltController : MonoBehaviour
     {
         boltObj = transform.GetChild(0);
         nutsContainer = transform.GetChild(1);
-        screw = transform.GetChild(2).gameObject;
+        //screw = transform.GetChild(2).gameObject;
     }
 
     private void OnEnable()
     {
-        screw.SetActive(false);
+        //screw.SetActive(false);
     }
     
     public void SetMaxNuts(int maxNuts)
     {
         maxNutsPerBolt = maxNuts;
-        // Cập nhật kích thước trụ nếu cần
-        if (maxNutsPerBolt == 4)
+        boltObj.localScale = new Vector3(boltObj.localScale.x, 0.14f, boltObj.localScale.z);
+        if (maxNutsPerBolt > 3)
         {
-            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.18f, boltObj.localScale.z);
-            screw.transform.position = new Vector3(screw.transform.position.x, 0.55f, screw.transform.position.z);
-        }
-        else if (maxNutsPerBolt == 5)
-        {
-            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.22f, boltObj.localScale.z);
-            screw.transform.position = new Vector3(screw.transform.position.x, 0.65f, screw.transform.position.z);
-        }
-        else if (maxNutsPerBolt == 3)
-        {
-            boltObj.localScale = new Vector3(boltObj.localScale.x, 0.14f, boltObj.localScale.z);
-            screw.transform.position = new Vector3(screw.transform.position.x, 0.4f, screw.transform.position.z);
+            float height = 0.14f + (maxNutsPerBolt - 3) * 0.04f; // Mỗi nut thêm cao thêm 0.04
+            boltObj.localScale = new Vector3(boltObj.localScale.x, height, boltObj.localScale.z);
         }
     }
 
@@ -96,6 +86,24 @@ public class BoltController : MonoBehaviour
         return result;
     }
     
+    public List<NutController> GetTopNutMysteryStack()
+    {
+        List<NutController> nuts = GetNuts();
+        List<NutController> result = new List<NutController>();
+        if (nuts.Count == 0) return result;
+
+        Color topColor = nuts[nuts.Count - 1].realColor; // nut trên cùng
+        // Lấy tất cả nut trên cùng màu
+        for (int i = nuts.Count - 1; i >= 0; i--)
+        {
+            if (nuts[i].realColor == topColor)
+                result.Insert(0, nuts[i]);
+            else
+                break;
+        }
+        return result;
+    }
+    
     public bool IsCompleted(int maxNuts)
     {
         List<NutController> nuts = GetNuts();
@@ -113,6 +121,6 @@ public class BoltController : MonoBehaviour
 
     public void OnCompleted()
     {
-        screw.SetActive(true);
+        //screw.SetActive(true);
     }
 }
